@@ -8,7 +8,7 @@ from methods.joint import Joint
 from methods.bare import Bare
 from methods.ergnn import ERGNN
 from methods.ssm import SSM
-from methods.cgm import CGM, CGMX
+from methods.cgm import CGM
 from methods.ewc import EWC
 from methods.mas import MAS
 from methods.gem import GEM
