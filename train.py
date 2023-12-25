@@ -65,7 +65,7 @@ def main():
     parser.add_argument('--dataset-name', type=str, default="corafull")
     parser.add_argument('--cls-per-task', type=int, default=2)
     parser.add_argument('--data-dir', type=str, default="./data")
-    parser.add_argument('--result-path', type=str, default="./results")
+    parser.add_argument('--result-dir', type=str, default="./results")
 
     # Argumnets for CGL methods.
     parser.add_argument('--tim', action='store_true')
@@ -117,7 +117,7 @@ def main():
     memory_bank_name = get_memory_bank_name(args)
 
     # Handle the pseudo labels.
-    if args.pseudo_label and (not os.path.exists(os.path.join(args.result_path, "memory_bank", f"{memory_bank_name}_0.pt")) or args.rewrite):
+    if args.pseudo_label and (not os.path.exists(os.path.join(args.result_dir, "memory_bank", f"{memory_bank_name}_0.pt")) or args.rewrite):
         model = get_backbone_model(dataset, data_stream, args)
         cgl_model = get_cgl_model(model, data_stream, args)
         cgl_model.pseudo_label = False
@@ -141,7 +141,7 @@ def main():
         else:
             model = get_backbone_model(dataset, data_stream, args)
             cgl_model = get_cgl_model(model, data_stream, args)
-            memory_bank_file = os.path.join(args.result_path, "memory_bank", f"{memory_bank_name}_{i}.pt")
+            memory_bank_file = os.path.join(args.result_dir, "memory_bank", f"{memory_bank_name}_{i}.pt")
             if os.path.exists(memory_bank_file) and not args.rewrite:
                 cgl_model.memory_bank = torch.load(memory_bank_file)
 
@@ -154,8 +154,8 @@ def main():
             for memory in cgl_model.memory_bank:
                 memory.to("cpu")
             
-            if not os.path.exists(os.path.join(args.result_path, "memory_bank")):
-                os.mkdir(os.path.join(args.result_path, "memory_bank"))
+            if not os.path.exists(os.path.join(args.result_dir, "memory_bank")):
+                os.mkdir(os.path.join(args.result_dir, "memory_bank"))
                 
             if not os.path.exists(memory_bank_file) or args.rewrite:
                 torch.save(cgl_model.memory_bank, memory_bank_file)

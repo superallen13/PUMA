@@ -26,8 +26,8 @@ for dataset in corafull arxiv reddit products; do
     # Loop over each budget value
     for b in "${budget[@]}"; do
         python train.py \
-        --data-dir /scratch/user/uqyliu71/PUMA_data/data \
-        --result-path /scratch/user/uqyliu71/PUMA_data/results \
+        --data-dir "./data" \
+        --result-dir "./results" \
         --seed $seed \
         --repeat $repeat \
         --cls-epoch $epoch \
