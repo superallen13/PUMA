@@ -114,8 +114,10 @@ def main():
         data_stream = Streaming(args.cls_per_task, dataset)
         torch.save(data_stream, task_file)
 
+    memory_bank_name = get_memory_bank_name(args)
+
     # Handle the pseudo labels.
-    if args.pseudo_label and not args.evaluate and (not os.path.exists(memory_bank_file) or args.rewrite):
+    if args.pseudo_label and (not os.path.exists(os.path.join(args.result_path, "memory_bank", f"{memory_bank_name}_0.pt")) or args.rewrite):
         model = get_backbone_model(dataset, data_stream, args)
         cgl_model = get_cgl_model(model, data_stream, args)
         cgl_model.pseudo_label = False
@@ -126,7 +128,6 @@ def main():
     AFs = []
     mAPs = []
     Ps = []
-    memory_bank_name = get_memory_bank_name(args)
     # Strat the training.
     for i in range(args.repeat):
         torch.cuda.empty_cache()
@@ -163,9 +164,9 @@ def main():
             task.to("cpu")
         
     if args.evaluate:
-        print(f"{np.mean(APs):.1f}±{np.std(APs, ddof=1):.1f}", flush=True)
-        print(f"{np.mean(mAPs):.1f}±{np.std(mAPs, ddof=1):.1f}", flush=True)
-        print(f"{np.mean(AFs):.1f}±{np.std(AFs, ddof=1):.1f}", flush=True)
+        print(f"AP: {np.mean(APs):.1f}±{np.std(APs, ddof=1):.1f}", flush=True)
+        print(f"mAP: {np.mean(mAPs):.1f}±{np.std(mAPs, ddof=1):.1f}", flush=True)
+        print(f"AF: {np.mean(AFs):.1f}±{np.std(AFs, ddof=1):.1f}", flush=True)
 
 
 if __name__ == '__main__':
