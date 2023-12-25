@@ -103,8 +103,10 @@ def main():
 
     seed_everything(args.seed)
     
-    # Handle the streaming data.
+    # Make the streaming data.
     dataset = get_dataset(args)
+    if not os.path.exists(os.path.join(args.data_dir, "streaming")):
+        os.mkdir(os.path.join(args.data_dir, "streaming"))
     task_file = os.path.join(args.data_dir, "streaming", f"{args.dataset_name}.streaming")
     if os.path.exists(task_file):
         data_stream = torch.load(task_file)
@@ -150,6 +152,10 @@ def main():
 
             for memory in cgl_model.memory_bank:
                 memory.to("cpu")
+            
+            if not os.path.exists(os.path.join(args.result_path, "memory_bank")):
+                os.mkdir(os.path.join(args.result_path, "memory_bank"))
+                
             if not os.path.exists(memory_bank_file) or args.rewrite:
                 torch.save(cgl_model.memory_bank, memory_bank_file)
         
