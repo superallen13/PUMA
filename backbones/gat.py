@@ -50,27 +50,3 @@ def eval_node_classifier(model, data, incremental_cls=None):
         correct = (pred == data.y[data.test_mask]).sum()
     acc = int(correct) / int(data.test_mask.sum())
     return acc
-
-def main():
-    from torch_geometric.datasets import Planetoid
-    dataset = Planetoid(root="/home/s4669928/graph/CaT-CGL/data", name="CiteSeer")
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    data = dataset[0]
-    nin = data.x.shape[1]
-    nhid = 32
-    nout = data.y.shape[0]
-    nlayers = 2
-    model = GAT(nin, nhid, nout, nlayers).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
-    edge_index = data.edge_index
-    adj = SparseTensor(row=edge_index[0], 
-                       col=edge_index[1], 
-                       sparse_sizes=(data.num_nodes, data.num_nodes))
-    data.adj_t = adj.t()
-    data.to(device, "x", "y", "adj_t")
-    model = train_node_classifier(model, data, optimizer)
-    acc = eval_node_classifier(model, data)
-    print(f"acc is {acc:0.2f}")
-
-if __name__ == '__main__':
-    main()
