@@ -20,7 +20,7 @@ progressbar2==4.2.0  # for visulasing the process of the condensation.
 # Usage
 To reproduce the results of Table 2 (classIL setting), please run the `table2.sh` in the `srcripts` folder:
 ```
-run .\srcripts\table2.sh
+bash ./scripts/table2.sh
 ```
 
 # Cite
